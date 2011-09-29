@@ -13,34 +13,35 @@ public class Server {
 
   public static Server Default = new Server();
 
-  private String _SMTPProtocol = "smtps";
-  private String _SMTPUrl = "";
-  private String _IMAPUrl = "";
+  private SendProtocol _sendProtocol = SendProtocol.SMTPS;
+  private FetchProtocol _fetchProtocol = FetchProtocol.IMAPS;
+  private String _sendServer = "";
+  private String _fetchServer = "";
   private String _userName = "";
   private String _password = "";
 
-  public String getSMTPProtocol() {
-    return _SMTPProtocol;
+  public SendProtocol getSendProtocol() {
+    return _sendProtocol;
   }
 
-  public void setSMTPProtocol(String SMTPProtocol) {
-    _SMTPProtocol = SMTPProtocol;
+  public void setSendProtocol(SendProtocol sendProtocol) {
+    _sendProtocol = sendProtocol;
   }
 
-  public String getSMTPUrl() {
-    return _SMTPUrl;
+  public String getSendServer() {
+    return _sendServer;
   }
 
-  public void setSMTPUrl(String SMTPUrl) {
-    _SMTPUrl = SMTPUrl;
+  public void setSendServer(String url) {
+    _sendServer = url;
   }
 
-  public String getIMAPUrl() {
-    return _IMAPUrl;
+  public String getFetchServer() {
+    return _fetchServer;
   }
 
-  public void setIMAPUrl(String IMAPUrl) {
-    _IMAPUrl = IMAPUrl;
+  public void setFetchServer(String url) {
+    _fetchServer = url;
   }
 
   public String getUserName() {
@@ -60,7 +61,7 @@ public class Server {
   }
 
   public void sendEmail(Email email) {
-    if (_SMTPUrl.equals("")) {
+    if (_sendServer.equals("")) {
       throw new IllegalStateException("Need to set a URL for the email server!");
     }
     try {
@@ -85,8 +86,8 @@ public class Server {
 
       msg.setFrom(email._from);
       msg.saveChanges();
-      Transport tr = session.getTransport(_SMTPProtocol);
-      tr.connect(_SMTPUrl, _userName, _password);
+      Transport tr = session.getTransport(_sendProtocol.getCode());
+      tr.connect(_sendServer, _userName, _password);
       tr.sendMessage(msg, msg.getAllRecipients());
       tr.close();
     } catch (Exception e) {
@@ -94,14 +95,42 @@ public class Server {
     }
   }
 
-  public void follow(String inbox, Protocol protocol, OnMailCallback onMailCallback) {
-    //TODO implement
+  public EmailFolder folder(String inbox) {
+    return null;
   }
 
-  public interface OnMailCallback {
+  public EmailFolder getInbox() {
+    return folder("INBOX");
   }
-  public enum Protocol {
-    POP,
-    IMAP
+
+  public enum FetchProtocol {
+    POP("pop3"),
+    IMAP("imap"),
+    IMAPS("imap");
+
+    private String _code;
+
+    private FetchProtocol(String code) {
+      _code = code;
+    }
+
+    public String getCode() {
+      return _code;
+    }
+  }
+
+  public enum SendProtocol {
+    SMTP("smtp"),
+    SMTPS("smtps");
+
+    private String _code;
+
+    private SendProtocol(String code) {
+      _code = code;
+    }
+
+    public String getCode() {
+      return _code;
+    }
   }
 }

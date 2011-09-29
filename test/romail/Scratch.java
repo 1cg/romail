@@ -5,8 +5,8 @@ public class Scratch {
 
 
 //    Server.Default.setDefaultFrom("test@test.com");
-    Server.Default.setSMTPUrl("smtp.gmail.com");
-    Server.Default.setIMAPUrl("imap.gmail.com");
+    Server.Default.setSendServer("smtp.gmail.com");
+    Server.Default.setFetchServer("imap.gmail.com");
     Server.Default.setUserName("joker@gmail.com");
     Server.Default.setPassword("joker");
     /*
@@ -19,7 +19,7 @@ public class Scratch {
 
      */
 
-    Server.Default.follow("INBOX", Server.Protocol.IMAP, new Server.OnMailCallback() {
+    Server.Default.getInbox().follow(new EmailFolder.OnMailCallback() {
       public void onMail(Email mail) {
         String content = mail.getText();
 
@@ -37,7 +37,7 @@ public class Scratch {
     /*
       Gosu:
 
-      Server.Default.follow( "INBOX", IMAP,  \ mail -> {
+      Server.Default.Inbox.follow( \ mail -> {
         var content = mail.Text
         if (content.startsWith("Hello!")) {
           var reply = mail.reply()
