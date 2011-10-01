@@ -37,7 +37,7 @@ function build() {
   classesDir.mkdirs()
   Ant.javac( :srcdir = path(src),
              :destdir = classesDir,
-             :classpath = classpath(lib.fileset()),
+             :classpath = classpath(lib.fileset()).withFileset( gosuHome.file("jars").fileset() ),
              :debug = true,
              :includeantruntime = false)
   Ant.copy( :filesetList = {src.fileset( :excludes = "**/*.java") },
