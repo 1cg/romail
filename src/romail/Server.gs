@@ -11,6 +11,10 @@ uses java.util.Properties
 uses java.lang.IllegalStateException
 uses java.lang.ThreadLocal
 uses gw.util.Stack
+uses javax.mail.Folder
+uses javax.mail.FolderClosedException
+uses javax.mail.search.FlagTerm
+uses javax.mail.Flags
 
 public class Server implements IReentrant {
 
@@ -95,7 +99,7 @@ public class Server implements IReentrant {
   }
 
   function folder(name : String) : EmailFolder {
-    return null
+    return new EmailFolder(this, name)
   }
 
   property get Inbox() : EmailFolder {
@@ -108,6 +112,41 @@ public class Server implements IReentrant {
   
   override function exit() {
     getStack().pop()
+  }
+  
+  internal function getAllMessages( emailFolder : EmailFolder ) : List<Email> {
+    var session = getSession()
+    // Get the store
+    using(var store = session.getStore(_fetchProtocol.Val)) {
+      store.connect(FetchServer, UserName, Password)
+      // Get folder
+      var f = store.getFolder(emailFolder.Name)
+      f.open(Folder.READ_ONLY)
+      try { 
+        return f.Messages.toList().map( \ m -> new Email(m) )
+      } finally {
+        // Close folder 
+        f.close(false)
+      }
+    }
+  }
+  
+  internal function getUnreadMessages( emailFolder : EmailFolder ) : List<Email> {
+    var session = getSession()
+    // Get the store
+    using(var store = session.getStore(_fetchProtocol.Val)) {
+      store.connect(FetchServer, UserName, Password)
+      // Get folder
+      var f = store.getFolder(emailFolder.Name)
+      f.open(Folder.READ_ONLY)
+      try { 
+        var ft =  new FlagTerm(new Flags(Flags.Flag.SEEN), false)
+        return f.search( ft ).toList().map( \ m -> new Email(m) )
+      } finally {
+        // Close folder 
+        f.close(false)
+      }
+    }
   }
   
   function connect() : IReentrant {
@@ -141,7 +180,7 @@ public class Server implements IReentrant {
   public enum FetchProtocol {
     POP("pop3"),
     IMAP("imap"),
-    IMAPS("imap")
+    IMAPS("imaps")
     var _code : String as readonly Val
     private construct( c : String) {
       _code = c

@@ -11,6 +11,17 @@ Server.Base = new Server() {
   :Password = ""
 }
 
+print( "all --------" )
+
+Server.Base.folder( "Scala" ).AllMessages.each( \ e -> print( e.From )  )
+
+print( "unread --------" )
+
+Server.Base.folder( "Scala" ).UnreadMessages.each( \ e -> print( e.From )  )
+
+
+if(true) { return }
+
 // The given block will be fired when new messages arrive in the Inbox
 // API demo only, doesn't currently work!
 Server.Base.Inbox.follow( \ e ->{

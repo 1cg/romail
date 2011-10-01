@@ -8,6 +8,7 @@ uses java.io.File
 uses java.util.ArrayList
 uses java.util.List
 uses java.lang.StringBuilder
+uses javax.mail.Message
 
 class Email {
 
@@ -19,7 +20,18 @@ class Email {
   var _subject : String as Subject = ""
   var _text : String as Text = "" 
   var _html : String as HTML = "" 
-  var _server : Server as Server = Server.Base 
+  var _server : Server as Server = Server.Base
+  
+  construct(){}
+  
+  internal construct(m : Message) {
+    _from = m.From?.first() as InternetAddress
+    _to = m.getRecipients( Message.RecipientType.TO )?.whereTypeIs( InternetAddress )?.toList()
+    _cc = m.getRecipients( Message.RecipientType.CC )?.whereTypeIs( InternetAddress )?.toList()
+    _bcc = m.getRecipients( Message.RecipientType.BCC )?.whereTypeIs( InternetAddress )?.toList()
+    Subject = m.Subject
+    Text = m.Content?.toString() // obviously wrong!
+  }
 
   property set From(s : String) {
     _from = parseEmail(s)
