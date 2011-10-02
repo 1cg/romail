@@ -27,7 +27,8 @@ public class Server implements IReentrant {
   var _fetchServer : String as FetchServer
   var _userName : String as UserName
   var _password : String as Password
-  
+  var _defaultSender : String as DefaultSender
+
   var _tlConnection = new ThreadLocal<PersistentSessionInfo>()
   static class PersistentSessionInfo {
     var _session : Session as Session
@@ -63,7 +64,11 @@ public class Server implements IReentrant {
 
     msg.setText( email.Text )
 
-    msg.setFrom( email._from )
+    if(email._from == null) {
+      msg.setFrom( romail.Email.parseEmail(DefaultSender) )
+    } else {
+      msg.setFrom( email._from )
+    }
 
     msg.saveChanges()
 

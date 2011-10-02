@@ -9,7 +9,8 @@ Server.Base = new Server() {
   :SendServer = "smtp.gmail.com",
   :FetchServer = "imap.gmail.com",
   :UserName = "",
-  :Password = ""
+  :Password = "",
+  :DefaultSender = "test@test.com"
 }
 
 //------------------------------------------------------

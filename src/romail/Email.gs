@@ -89,7 +89,7 @@ class Email {
     _bcc.add(new InternetAddress(email, name))
   }
 
-  private function parseEmail(email : String) : InternetAddress {
+  internal static function parseEmail(email : String) : InternetAddress {
     return new InternetAddress(email)
   }
   
