@@ -22,12 +22,12 @@ will be used when no other server specified, at the static property `Server.BASE
 Here is some typical code for setting up the default server, which should be done during
 your program set up (e.g. in your RoninConfig constructor):
 
-  Server.Base = new Server() {
-    :SendServer = "smtp.gmail.com",
-    :FetchServer = "imap.gmail.com",
-    :UserName = "example@gmail.com",
-    :Password = "opensaysme"
-  }   
+    Server.Base = new Server() {
+      :SendServer = "smtp.gmail.com",
+      :FetchServer = "imap.gmail.com",
+      :UserName = "example@gmail.com",
+      :Password = "opensaysme"
+    }   
  
 This sets up a server that will send email through GMail's SMTP server and read email from 
 GMail's IMAP servers.
@@ -36,13 +36,13 @@ GMail's IMAP servers.
 
 Sending an email in Romail is trivial:
 
-  var email = new Email() {
-    :To = "example2@gmail.com",
-    :From = "example@gmail.com",
-    :Subject = "Example Email",
-    :Text = "Hello, this is an example email...\n\nDid you get it?"
-  }
-  email.send()
+    var email = new Email() {
+      :To = "example2@gmail.com",
+      :From = "example@gmail.com",
+      :Subject = "Example Email",
+      :Text = "Hello, this is an example email...\n\nDid you get it?"
+    }
+    email.send()
 
 Easy as pie.  This will use the `Server.BASE` configuration to send this email through the
 `smtp.gmail.com`.
@@ -50,17 +50,17 @@ Easy as pie.  This will use the `Server.BASE` configuration to send this email t
 The code above will open a new connection every time you call `send()`.  You can keep the
 connection open for multiple emails by using the `Server#connect()` method:
 
-  using( Server.Base.connect() ) {
-    for( user in getAllUser() ) {
-      var email = new Email() {
-        :To = user.Email,
-        :From = "example@gmail.com",
-        :Subject = "Thank You!",
-        :Text = "Thanks for using our application!"
+    using( Server.Base.connect() ) {
+      for( user in getAllUser() ) {
+        var email = new Email() {
+          :To = user.Email,
+          :From = "example@gmail.com",
+          :Subject = "Thank You!",
+          :Text = "Thanks for using our application!"
+        }
+        email.send()
       }
-      email.send()
     }
-  }
 
 This will create one SMTP connection and send all the emails through that connection, rather
 than opening a new SMTP connection for each user. 
@@ -70,7 +70,7 @@ than opening a new SMTP connection for each user.
 Romail makes a common pattern, following an email folder for new messages, very easy to 
 implement:
 
-  Server.Base.folder( "UserResponses" ).follow( \ email -> print( "Got an email from a user! " + email.From ) )
+    Server.Base.folder( "UserResponses" ).follow( \ email -> print( "Got an email from a user! " + email.From ) )
 
 You use the `folder()` method to get a folder on the server and then call the `follow()` method,
 passing in a block that takes an email.  This block will be invoked when new mail arrives in the
