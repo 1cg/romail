@@ -2,6 +2,7 @@ classpath "lib,src"
 
 uses romail.Email
 uses romail.Server
+uses java.lang.Thread
 
 // Server setup - this is the default server config that emails will use
 Server.Base = new Server() {
@@ -11,22 +12,24 @@ Server.Base = new Server() {
   :Password = ""
 }
 
-print( "all --------" )
-
-Server.Base.folder( "Scala" ).AllMessages.each( \ e -> print( e.From )  )
-
-print( "unread --------" )
-
-Server.Base.folder( "Scala" ).UnreadMessages.each( \ e -> print( e.From )  )
-
-
-if(true) { return }
+//------------------------------------------------------
+// Reading Email
+//------------------------------------------------------
 
 // The given block will be fired when new messages arrive in the Inbox
-// API demo only, doesn't currently work!
-Server.Base.Inbox.follow( \ e ->{
+Server.Base.folder( "Scala" ).follow( \ e ->{
   print( "Got an email from " + e.From )
 })
+
+// Prints out all the senders of all messages in the "Scala" folder
+Server.Base.folder( "Scala" ).AllMessages.each( \ e -> print( e.From )  )
+
+// Prints out all the senders of unread messages in the "Scala" folder
+Server.Base.folder( "Scala" ).UnreadMessages.each( \ e -> print( e.From )  )
+
+//------------------------------------------------------
+// Sending Email
+//------------------------------------------------------
 
 //The common case is very simple
 var email = new Email() {

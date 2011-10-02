@@ -149,6 +149,27 @@ public class Server implements IReentrant {
     }
   }
   
+  internal function processNewMessages( emailFolder : EmailFolder ) {
+    var session = getSession()
+    // Get the store
+    using(var store = session.getStore(_fetchProtocol.Val)) {
+      store.connect(FetchServer, UserName, Password)
+      // Get folder
+      var f = store.getFolder(emailFolder.Name)
+      f.open(Folder.READ_WRITE)
+      try { 
+        var ft =  new FlagTerm(new Flags(Flags.Flag.SEEN), false)
+        for( m in f.search( ft ) ) {
+          emailFolder.Listener(new Email(m) )
+          m.setFlag( Flags.Flag.SEEN, true )
+        }
+      } finally {
+        // Close folder 
+        f.close(false)
+      }
+    }
+  }
+  
   function connect() : IReentrant {
     return new IReentrant() {
       override function enter() {
