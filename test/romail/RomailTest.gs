@@ -4,10 +4,20 @@ uses junit.framework.TestCase
 
 class RomailTest extends TestCase {
 
-  function testSomething() {
+  function testSomething()
+  {
+    var account = new Account()
+    account.FullName = "Rick Kitts"
+    account.EmailAddress = "rkitts@loudhouse.org"
+    account.OutgoingSMTPServer = "smtp.gmail.com"
+    account.UserName = "rkitts@loudhouse.org"
+    account.Password = "XXX"
+
     var em = new Email()
-    em.To = "foo@bar.com"
-    assertEquals("foo@bar.com\"", em.To) //why?
+    em.To = "rkitts@loudhouse.org"
+    em.Subject = "Romail testing"
+    em.Text = "Hello from romail!"
+    account.send(em)
   }
 
 }
