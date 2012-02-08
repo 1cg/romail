@@ -14,23 +14,14 @@ web framework, but it has no dependencies on it and can be used in any gosu envi
 
 ## Set Up ##
 
-Typically a system will have one email server it uses for sending emails (usually over SMTP)
-and, less commonly, a server it polls for incoming emails. Romail wraps the idea of sending
-and receiving emails up in a single class, `romail.Server`.  There is a default server that
-will be used when no other server specified, at the static property `Server.BASE`.
+Reflecting a philosophy of easy should be easy and hard should be possible Romail tries
+to make set up an easy thing. Setting up Romail to send and receive mail using a GMail
+account is straight forward:
 
-Here is some typical code for setting up the default server, which should be done during
-your program set up (e.g. in your RoninConfig constructor):
+    var account = new GmailIMAPAccount("userName", "password")
 
-    Server.Base = new Server() {
-      :SendServer = "smtp.gmail.com",
-      :FetchServer = "imap.gmail.com",
-      :UserName = "example@gmail.com",
-      :Password = "opensaysme"
-    }   
- 
-This sets up a server that will send email through GMail's SMTP server and read email from 
-GMail's IMAP servers.
+Romail intends to support well known email systems such as Exchange, Yahoo! mail and so forth.
+Adding support for a new system, say Hotmail, should be simple.
 
 ## Sending Email ##
 
@@ -42,37 +33,36 @@ Sending an email in Romail is trivial:
       :Subject = "Example Email",
       :Text = "Hello, this is an example email...\n\nDid you get it?"
     }
+
+    account.send(email)
+
+
+In the near future the need to refer directly to the account will be removed. In other words
+instead of
+
+    account.send(email)
+
+one will be able to do
+
     email.send()
 
-Easy as pie.  This will use the `Server.BASE` configuration to send this email through the
-`smtp.gmail.com`.
-
-The code above will open a new connection every time you call `send()`.  You can keep the
-connection open for multiple emails by using the `Server#connect()` method:
-
-    using( Server.Base.connect() ) {
-      for( user in getAllUser() ) {
-        var email = new Email() {
-          :To = user.Email,
-          :From = "example@gmail.com",
-          :Subject = "Thank You!",
-          :Text = "Thanks for using our application!"
-        }
-        email.send()
-      }
-    }
-
-This will create one SMTP connection and send all the emails through that connection, rather
-than opening a new SMTP connection for each user. 
+Easy as pie.
 
 ## Reading Email ##
 
-Romail makes a common pattern, following an email folder for new messages, very easy to 
+Reading email in Romail is currently not too big a deal:
+
+    var account = new GmailIMAPAccount("userName", "password")
+    var unreadMessages = account.Inbox.UnreadEmailMessages
+    for(var message in unreadMessages){
+        // Mark all the unread messages as read
+        unreadMessage.markRead()
+    }
+
+In the near future Romail will make a common pattern, following an email folder for new messages, very easy to
 implement:
 
-    Server.Base.folder( "UserResponses" ).follow( \ email -> print( "Got an email from a user! " + email.From ) )
+    account.Inbox.follow( \ email -> print( "Got an email from a user! " + email.From ) )
 
-You use the `folder()` method to get a folder on the server and then call the `follow()` method,
-passing in a block that takes an email.  This block will be invoked when new mail arrives in the
-"UserResponses" folder.
-
+account.Inbox returns an EmailFolder which has the `follow()` method that accepts a block that takes an email.
+This block will be invoked when new mail arrives in the Inbox, or any other folder on the server.
