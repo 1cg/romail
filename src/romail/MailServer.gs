@@ -8,8 +8,8 @@ uses javax.mail.Session
  * Time: 3:36 PM
  *
  * Simple base class for all types of mail servers. Just holds the basic information
- * e.g. username, password, etc
- */
+    * e.g. username, password, etc
+    */
 abstract class MailServer {
   var _server : String as Server
   var _userName : String as UserName

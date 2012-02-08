@@ -19,12 +19,27 @@ uses javax.mail.Message.RecipientType
 abstract class Account {
   var _fullName: String as FullName
   var _emailAddress: String as EmailAddress
-  // Incoming and outgoing servers. Out going is of course always an SMTP
-  // server...
-  var _incomingServer: String as IncomingServer
-  var _outgoingServer: String as OutgoingSMTPServer
   var _userName: String as UserName
   var _password: String as Password
 
-  abstract public function send(email: Email)
+  var _outboundServer : OutboundSMTP as OutBoundSMTPServer
+
+  construct(outboundServer : OutboundSMTP)
+  {
+    _outboundServer = outboundServer
+    return
+  }
+
+  public function send(email: EmailMessage)
+  {
+    _outboundServer.sendEmail(email)
+    return
+  }
+
+  /**
+   * Returns an EmailFolder that represents the accounts Inbox. Both IMAP and POP servers
+   * have the concept of a mailbox called Inbox. IMAP allows for other mailboxes.
+   */
+  abstract public property get Inbox() : EmailFolder
+
 }

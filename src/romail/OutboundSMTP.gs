@@ -25,21 +25,28 @@ abstract class OutboundSMTP extends MailServer{
     Password = serverPassword
   }
 
-  public function sendEmail(email : Email)
+  public function sendEmail(email : EmailMessage)
   {
     var session = MailSession
     var message = convertToMessage(email, session)
     Transport.send(message)
+
+    // This is important. The semantics of some methods on EmailMessage, such as markRead(),
+    // require that if a message is not sent then exceptions will be thrown if the method is
+    // called so this being specifically here is important.
+    email.Basis = message
     return
   }
 
-  private function convertToMessage(email : Email, session : Session): Message
+  private function convertToMessage(email : EmailMessage, session : Session): Message
   {
     var retVal = new MimeMessage(session)
     retVal.setFrom(new InternetAddress(email.From))
     retVal.addRecipient(Message.RecipientType.TO, new InternetAddress(email.To))
     retVal.setSubject(email.Subject)
     retVal.setText(email.Text)
+
+
     return(retVal)
   }
 }

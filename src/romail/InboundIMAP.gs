@@ -4,6 +4,10 @@ uses java.util.Properties
 uses javax.mail.PasswordAuthentication
 uses javax.mail.Authenticator
 uses java.util.ArrayList
+uses javax.mail.Store
+uses javax.mail.Session
+uses com.sun.org.apache.xml.internal.utils.StringVector
+uses javax.mail.Folder
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,11 +16,26 @@ uses java.util.ArrayList
  * Time: 11:43 AM
  */
 class InboundIMAP extends MailServer{
-  var _store: Store
-  
-  private property get EmailStore() : Store
+  protected var _store: Store
+
+  protected construct(serverName : String, uName : String, pword : String)
   {
-    if(_store != null){
+    Server = serverName
+    UserName = uName
+    Password = pword
+    return
+  }
+
+  public property get Inbox() : EmailFolder
+  {
+    var basis = EmailStore.getFolder("Inbox")
+    var retVal = new EmailFolder(basis)
+    return(retVal)
+  }
+
+  protected property get EmailStore() : Store
+  {
+    if(_store == null){
       _store = MailSession.getStore("imap")
       _store.connect()
     }
