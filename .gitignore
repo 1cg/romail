@@ -5,3 +5,5 @@ src/.DS_Store
 lib
 target
 romail.i??
+
+test/romail/romailtest.properties
