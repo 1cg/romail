@@ -8,6 +8,10 @@ uses javax.mail.Store
 uses javax.mail.Session
 uses com.sun.org.apache.xml.internal.utils.StringVector
 uses javax.mail.Folder
+uses java.util.Set
+uses java.util.HashSet
+uses java.util.Map
+uses java.util.HashMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,20 +21,15 @@ uses javax.mail.Folder
  */
 class InboundIMAP extends MailServer{
   protected var _store: Store
+  protected var _openedFolders : Map<String,EmailFolder>
 
   protected construct(serverName : String, uName : String, pword : String)
   {
     Server = serverName
     UserName = uName
     Password = pword
+    _openedFolders = new HashMap<String, EmailFolder>()
     return
-  }
-
-  public property get Inbox() : EmailFolder
-  {
-    var basis = EmailStore.getFolder("Inbox")
-    var retVal = new EmailFolder(basis)
-    return(retVal)
   }
 
   protected property get EmailStore() : Store
@@ -40,6 +39,14 @@ class InboundIMAP extends MailServer{
       _store.connect()
     }
     return(_store)
+  }
+
+  override function close()
+  {
+    _openedFolders.Values.each( \ elt -> elt.flush())
+    _openedFolders.clear()
+    _store.close()
+    return
   }
 
   override protected function buildSession(): Session
@@ -55,4 +62,36 @@ class InboundIMAP extends MailServer{
     });
     return(retVal)
   }
+
+  /**
+   * Unlike Javamail, Romail caches folders locally. This way operations on email messages (e.g. delete)
+   * are visible everywhere someone asked for the folder XXX.
+   */
+  function getFolder(name: String): EmailFolder
+  {
+    var translatedFolderName = translateFolderName(name)
+    var retVal: EmailFolder = _openedFolders.get(translatedFolderName)
+    if(retVal == null){
+      var folder = EmailStore.getFolder(name)
+      if (folder.exists() == true){
+        retVal = new EmailFolder(folder)
+        _openedFolders.put(translatedFolderName, retVal)
+      }
+    }
+    return(retVal)
+  }
+
+  /**
+   * Folder name case sensitivity is implementation specific. See RFC3501 5.1. By default we treat them as
+   * case sensitive. Inbox is however case-insensitive (ibid)
+   */
+  protected function translateFolderName(name : String) : String
+  {
+    var retVal = name
+    if(name.toLowerCase().equals("inbox")){
+      retVal = name.toLowerCase()
+    }
+    return(retVal)
+  }
+
 }

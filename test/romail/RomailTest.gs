@@ -14,31 +14,57 @@ uses java.lang.Thread
  */
 class RomailTest extends RomailTestCase{
 
-  public function testMarkingUnsetEmailMessageReadThrows()
+  public function testAskingForNonExistentFolderReturnsNull()
   {
-    var message = new EmailMessage()
-    try {
-      message.markRead()
-      fail("Exception not thrown")
-    }
-    catch(ise : IllegalStateException){
-    }
+    var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var nonExistent = account.getFolder("crapola")
+    assertNull(nonExistent)
   }
-
+  
   public function testUnreadMessageCountEqualsUnreadEmailMessagesSize()
   {
     var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
-    var unreadMessages = account.Inbox.UnreadEmailMessages
-    assertEquals(account.Inbox.UnreadMessageCount, unreadMessages.size())
+    clearFolder(account.Inbox)
+    var email = new EmailMessage () {
+        :From = TestAccountProperties.getProperty("gmail.username"),
+        :To = TestAccountProperties.getProperty("gmail.username"),
+        :Subject = "Testing",
+        :Text = "From romail in the debugger. Sweet!"
+    }
+    addUnreadMessages(account, email, 4)
+    account.close()
+
+    account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var timeToWait = 60000 * 3
+    while(account.Inbox.UnreadMessageCount == 0 && timeToWait > 0){
+      Thread.sleep(5000)
+      timeToWait -= 5000
+    }
+    // Ordering here is important. GMail marks messages as read (SEEN) as soon as they are downloaded.
+    var unreadCount = account.Inbox.UnreadMessageCount
     assertTrue(account.Inbox.UnreadMessageCount > 0)
+    var unreadMessages = account.Inbox.UnreadEmailMessages
+    assertEquals(unreadCount, unreadMessages.size())
   }
 
   public function testMarkingMessageReadReducesUnreadMessageCount()
   {
     var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    clearFolder(account.Inbox)
+    var email = new EmailMessage () {
+        :From = TestAccountProperties.getProperty("gmail.username"),
+        :To = TestAccountProperties.getProperty("gmail.username"),
+        :Subject = "Testing",
+        :Text = "From romail in the debugger. Sweet!"
+    }
+    addUnreadMessages(account, email, 4)
+    account.close()
+
+    account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
     var unrCount = account.Inbox.UnreadMessageCount
     var unreadMessages = account.Inbox.UnreadEmailMessages
     unreadMessages[0].markRead()
+    assertTrue(unreadMessages[0].isMarkedRead())
     assertEquals(unrCount - 1, account.Inbox.UnreadMessageCount)
   }
 

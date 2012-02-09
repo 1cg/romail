@@ -23,6 +23,8 @@ abstract class MailServer {
     }
     return(_session)
   }
+  
+  abstract public function close()
 
   abstract protected function buildSession() : Session
 }

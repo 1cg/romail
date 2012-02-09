@@ -37,6 +37,16 @@ abstract class Account {
   }
 
   /**
+   * Close simply closes all open resources being used. This is really here so one can easily
+   * flush all (IMAP) folders, disconnect (IMAP) stores and so forth. Note there is no open()
+   * method. Once an Account instance has been closed it's no longer usable. The outcome of any
+   * method call made on a closed Account is entirely undefined.
+   */
+  public function close()
+  {
+    _outboundServer.close()
+  }
+  /**
    * Returns an EmailFolder that represents the accounts Inbox. Both IMAP and POP servers
    * have the concept of a mailbox called Inbox. IMAP allows for other mailboxes.
    */

@@ -38,14 +38,21 @@ abstract class OutboundSMTP extends MailServer{
     return
   }
 
+  /**
+   * No-op
+   */
+  override public function close()
+  {
+    return
+  }
+
   private function convertToMessage(email : EmailMessage, session : Session): Message
   {
     var retVal = new MimeMessage(session)
     retVal.setFrom(new InternetAddress(email.From))
-    retVal.addRecipient(Message.RecipientType.TO, new InternetAddress(email.To))
+    email.Recipients.each( \ elt -> retVal.addRecipient(Message.RecipientType.TO, new InternetAddress(elt)))
     retVal.setSubject(email.Subject)
     retVal.setText(email.Text)
-
 
     return(retVal)
   }

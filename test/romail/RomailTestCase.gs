@@ -30,4 +30,20 @@ abstract class RomailTestCase extends TestCase{
     }
     return(_romailTestProperties)
   }
+
+  protected function clearFolder(folder : EmailFolder)
+  {
+    folder.AllEmailMessages.each( \ elt -> elt.delete())
+    folder.flush()
+    return
+  }
+  
+  protected function addUnreadMessages(account : Account, emailBasis: EmailMessage, messageCount : int)
+  {
+    for(cntr in 1..messageCount){
+      emailBasis.Subject = emailBasis.Subject + cntr
+      account.send(emailBasis)
+    }
+    return
+  }
 }

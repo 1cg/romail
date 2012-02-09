@@ -17,7 +17,16 @@ abstract class IMAPAccount extends Account{
   }
 
   override property get Inbox(): EmailFolder {
-    var retVal = _inboundServer.Inbox
+    var retVal = getFolder("Inbox")
+    return(retVal)
+  }
+
+  /**
+   * Returns the folder with the given name, or null if the folder does not exist on the server
+   */
+  public function getFolder(name : String) : EmailFolder
+  {
+    var retVal  = _inboundServer.getFolder(name)
     return(retVal)
   }
 }
