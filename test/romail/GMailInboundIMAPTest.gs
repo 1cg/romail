@@ -14,7 +14,7 @@ class GMailInboundIMAPTest extends RomailTestCase{
 
   function testInboxIsNotNull()
   {
-    var gmailIMAP = new GMailInboundIMAP(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var gmailIMAP = new GMailInboundIMAP(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD)
     var folder = gmailIMAP.getFolder("Inbox")
     assertNotNull(folder)
   }

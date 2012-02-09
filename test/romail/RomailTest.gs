@@ -16,25 +16,25 @@ class RomailTest extends RomailTestCase{
 
   public function testAskingForNonExistentFolderReturnsNull()
   {
-    var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var account = new GmailIMAPAccount(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD);
     var nonExistent = account.getFolder("crapola")
     assertNull(nonExistent)
   }
 
   public function testUnreadMessageCountEqualsUnreadEmailMessagesSize()
   {
-    var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var account = new GmailIMAPAccount(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD)
     clearFolder(account.Inbox)
     var email = new EmailMessage () {
-        :From = TestAccountProperties.getProperty("gmail.username"),
-        :To = TestAccountProperties.getProperty("gmail.username"),
+        :From = TestAccountConfig.GMAIL_USERNAME,
+        :To = TestAccountConfig.GMAIL_USERNAME,
         :Subject = "Testing",
         :Text = "From romail in the debugger. Sweet!"
     }
     addUnreadMessages(account, email, 4)
     account.close()
 
-    account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    account = new GmailIMAPAccount(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD)
     var timeToWait = 60000 * 3
     while(account.Inbox.UnreadMessageCount == 0 && timeToWait > 0){
       Thread.sleep(5000)
@@ -49,18 +49,18 @@ class RomailTest extends RomailTestCase{
 
   public function testMarkingMessageReadReducesUnreadMessageCount()
   {
-    var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var account = new GmailIMAPAccount(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD)
     clearFolder(account.Inbox)
     var email = new EmailMessage () {
-        :From = TestAccountProperties.getProperty("gmail.username"),
-        :To = TestAccountProperties.getProperty("gmail.username"),
+        :From = TestAccountConfig.GMAIL_USERNAME,
+        :To = TestAccountConfig.GMAIL_USERNAME,
         :Subject = "Testing",
         :Text = "From romail in the debugger. Sweet!"
     }
     addUnreadMessages(account, email, 4)
     account.close()
 
-    account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    account = new GmailIMAPAccount(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD)
     var unrCount = account.Inbox.UnreadMessageCount
     var unreadMessages = account.Inbox.UnreadEmailMessages
     unreadMessages[0].markRead()
@@ -71,11 +71,11 @@ class RomailTest extends RomailTestCase{
   public function testSendingMailSeemsToWork()
   {
     // Send mail to ourselves, wait a little bit, see if it shows up
-    var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
+    var account = new GmailIMAPAccount(TestAccountConfig.GMAIL_USERNAME, TestAccountConfig.GMAIL_PASSWORD)
     var start = account.Inbox.UnreadMessageCount
     var email = new EmailMessage () {
-        :From = TestAccountProperties.getProperty("gmail.username"),
-        :To = TestAccountProperties.getProperty("gmail.username"),
+        :From = TestAccountConfig.GMAIL_USERNAME,
+        :To = TestAccountConfig.GMAIL_USERNAME,
         :Subject = "Testing",
         :Text = "From romail in the debugger. Sweet!"
     }

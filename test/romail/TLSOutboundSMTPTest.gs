@@ -12,11 +12,11 @@ class TLSOutboundSMTPTest extends RomailTestCase{
 
   function  testCanSendMailWithoutException()
   {
-    var smtpUser = TestAccountProperties.getProperty("smtp.user")
-    var smtp = new TLSOutboundSMTP(TestAccountProperties.getProperty("smtp.server"), 587, smtpUser, TestAccountProperties.getProperty("smtp.password"))
+    var smtpUser = TestAccountConfig.SMTP_USER
+    var smtp = new TLSOutboundSMTP(TestAccountConfig.SMTP_SERVER, 587, smtpUser, TestAccountConfig.SMTP_PASSWORD)
     var email = new EmailMessage () {
         :From = smtpUser,
-        :To = TestAccountProperties.getProperty("recipient"),
+        :To = TestAccountConfig.RECIPIENT_EMAIL,
         :Subject = "Testing",
         :Text = "From romail in the debugger. Sweet!"
     }

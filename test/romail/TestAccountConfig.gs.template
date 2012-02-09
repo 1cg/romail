@@ -1,0 +1,38 @@
+package romail
+/**
+ * Copy this file into TestAcountConfig.gs, set the return values appropriately. See RomailTest for how these are used.
+ */
+class TestAccountConfig {
+
+  static property get SMTP_SERVER() : String
+  {
+    return ""
+  }
+
+  static property get SMTP_USER() : String
+  {
+    return ""
+  }
+
+
+  static property get SMTP_PASSWORD() : String
+  {
+    return ""
+  }
+
+  static property get RECIPIENT_EMAIL() : String
+  {
+    return ""
+  }
+
+
+  static property get GMAIL_USERNAME() : String
+  {
+    return ""
+  }
+
+  static property get GMAIL_PASSWORD() : String
+  {
+    return ""
+  }
+}

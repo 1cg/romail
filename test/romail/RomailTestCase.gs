@@ -17,20 +17,6 @@ uses java.io.FileInputStream
  */
 abstract class RomailTestCase extends TestCase{
 
-  private var _romailTestProperties : Properties
-
-  protected property get TestAccountProperties() : Properties
-  {
-    if(_romailTestProperties == null){
-      var propsLocation = RomailTestCase.Type.SourceFileHandle.FilePath
-      propsLocation = propsLocation.substring(0, propsLocation.lastIndexOf('/'))
-      var input = new FileInputStream(propsLocation + "/romailtest.properties")
-      _romailTestProperties = new Properties()
-      _romailTestProperties.load(input)
-    }
-    return(_romailTestProperties)
-  }
-
   protected function clearFolder(folder : EmailFolder)
   {
     folder.AllEmailMessages.each( \ elt -> elt.delete())
