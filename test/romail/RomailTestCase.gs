@@ -34,7 +34,7 @@ abstract class RomailTestCase extends TestCase{
   protected function clearFolder(folder : EmailFolder)
   {
     folder.AllEmailMessages.each( \ elt -> elt.delete())
-    folder.flush()
+    folder.close()
     return
   }
   

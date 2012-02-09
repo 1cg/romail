@@ -43,7 +43,7 @@ class InboundIMAP extends MailServer{
 
   override function close()
   {
-    _openedFolders.Values.each( \ elt -> elt.flush())
+    _openedFolders.Values.each( \ elt -> elt.close())
     _openedFolders.clear()
     _store.close()
     return

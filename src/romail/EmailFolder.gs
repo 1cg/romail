@@ -42,20 +42,16 @@ class EmailFolder {
     return(OpenedBasis.UnreadMessageCount)
   }
 
-  /**
-   * Some operations, like EmailMessage.delete() are not persisted on the server until the folder in which
-   * those operations took place has been closed. This method allows you to do that anytime by closing and
-   * then reopning the [underlying javamail] folder.
-   */
-  public function flush()
+  public function close()
   {
     if(_basis.Open == true){
       _basis.close(true)
     }
     return
   }
+
   /**
-   * Returns _basis guaranteed to be opened in READ_WRITE mode. Do not(!) access basis except through
+   * Returns _basis guaranteed to be opened in READ_ONLY mode. Do not(!) access basis except through
    * this method unless you know what you are doing
    */
   private property get OpenedBasis() : Folder

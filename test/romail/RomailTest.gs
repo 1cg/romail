@@ -20,7 +20,7 @@ class RomailTest extends RomailTestCase{
     var nonExistent = account.getFolder("crapola")
     assertNull(nonExistent)
   }
-  
+
   public function testUnreadMessageCountEqualsUnreadEmailMessagesSize()
   {
     var account = new GmailIMAPAccount(TestAccountProperties.getProperty("gmail.username"), TestAccountProperties.getProperty("gmail.password"))
