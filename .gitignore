@@ -7,3 +7,5 @@ target
 romail.i??
 
 test/romail/romailtest.properties
+
+test/romail/TestAccountConfig.gs
