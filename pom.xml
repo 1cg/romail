@@ -2,6 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.gosu-lang</groupId>
+    <artifactId>gosu-project-parent</artifactId>
+    <version>2</version>
+  </parent>
+
   <groupId>romail</groupId>
   <artifactId>romail</artifactId>
   <version>0.1-SNAPSHOT</version>
@@ -11,31 +17,17 @@
 
   <repositories>
     <repository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <id>gosu-lang.org</id>
-      <name>Official Gosu website</name>
-      <url>http://gosu-lang.org/m2</url>
+      <id>gosu-lang.org-releases</id>
+      <name>Official Gosu website (releases)</name>
+      <url>http://gosu-lang.org/repositories/m2/releases</url>
     </repository>
   </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <id>gosu-lang.org</id>
-      <name>Official Gosu website</name>
-      <url>http://gosu-lang.org/m2</url>
-    </pluginRepository>
-  </pluginRepositories>
+  <scm>
+    <connection>scm:git:git@github.com:gosu-lang/romail.git</connection>
+    <url>scm:git:git@github.com:gosu-lang/romail.git</url>
+    <developerConnection>scm:git:git@github.com:gosu-lang/romail.git</developerConnection>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -74,17 +66,8 @@
       <plugin>
         <groupId>org.gosu-lang</groupId>
         <artifactId>maven-gosu-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>insert-gosu-artifact</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
-          <gosuVersion>0.9-SNAPSHOT</gosuVersion>
+          <gosuVersion>0.9-8</gosuVersion>
         </configuration>
       </plugin>
       <plugin>
